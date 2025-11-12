@@ -1,12 +1,9 @@
-/* * NOTA: Este é um código de EXEMPLO, recriado a partir
- * das imagens do protótipo. Não é o código original.
- */
+
 
 /* Importação da fonte pixelada (ex: Google Fonts) */
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 body {
-    /* Fundo azul/ciano vibrante, visto em várias telas */
      background-image: url('../img/fundo.png');
     font-family: Arial, sans-serif; /* Fonte padrão para perguntas */
     color: #FFFFFF; /* Texto branco */
