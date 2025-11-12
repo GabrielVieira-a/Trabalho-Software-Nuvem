@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudQuiz</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="quiz-container">
+
+        <div id="start-screen" class="screen">
+            <h1 class="pixel-title">QUIZ SOFTWARE<br>EM NUVEM</h1>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="nome">NOME:</label>
+                    <input type="text" id="nome" name="nome">
+                </div>
+                <div class="form-group">
+                    <label for="email">EMAIL:</label>
+                    <input type="email" id="email" name="email">
+                </div>
+                <button type="submit" class="btn-iniciar">INICIAR !</button>
+            </form>
+        </div>
+
+        <div id="rules-screen" class="screen" style="display:none;">
+            <h1 class="pixel-title">REGRAS</h1>
+            
+            <ul class="regras-lista">
+                <li>1. ERRAR A RESPOSTA FAZ COM QUE VOCÊ PERCA DE VIDA.</li> [cite: 7]
+                <li>2. O GABARITO SERÁ APRESENTADO NO FINAL DAS PERGUNTAS.</li> [cite: 9]
+                <li>3. VENÇA O QUIZ !!!</li>
+            </ul>
+            
+            <button class="btn-iniciar" id="start-quiz-btn">JOGAR!</button>
+        </div>
+
+        <div id="quiz-screen" class="screen" style="display:none;">
+            <div class="health-bar-container">
+                <div class="health-bar-inner" id="health-text">100%</div> [cite: 12]
+            </div>
+
+            <h2 class="pergunta-texto" id="question-text">
+                Carregando pergunta...
+            </h2> [cite: 13]
+
+            <div class="opcoes-container" id="options-container">
+                </div>
+        </div>
+
+        <div id="results-screen" class="screen" style="display:none;">
+            <h1 class="pixel-title">GABARITO</h1> [cite: 35]
+            
+            <div class="gabarito-lista">
+                <h3>Sua Pontuação: <span id="final-score">...</span></h3>
+                
+                <p>1: (Resposta da Pergunta 1)</p> [cite: 36]
+                <p>2: FALSO</p> [cite: 37]
+                <p>3: VERDADEIRO</p> [cite: 38]
+                <p>4: A</p> [cite: 39]
+            </div>
+
+            <button class="btn-iniciar" id="play-again-btn">Jogar Novamente</button>
+        </div>
+
+    </div> </body>
+</html>

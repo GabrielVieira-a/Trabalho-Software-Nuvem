@@ -1,0 +1,115 @@
+/* * NOTA: Este é um código de EXEMPLO, recriado a partir
+ * das imagens do protótipo. Não é o código original.
+ */
+
+/* Importação da fonte pixelada (ex: Google Fonts) */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+body {
+    /* Fundo azul/ciano vibrante, visto em várias telas */
+     background-image: url('../img/fundo.png');
+    font-family: Arial, sans-serif; /* Fonte padrão para perguntas */
+    color: #FFFFFF; /* Texto branco */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+
+/* Títulos principais (como "REGRAS" ou "QUIZ SOFTWARE EM NUVEM") */
+h1.pixel-title {
+    font-family: 'Press Start 2P', cursive;
+    color: #e7c83d; /* Cor amarela */
+    font-size: 2.5rem;
+    text-shadow: 3px 3px #000000;
+    margin-bottom: 30px;
+}
+
+/* Barra de Vida (o "100%") */
+.health-bar-container {
+    width: 100%;
+    height: 25px;
+    background-color: #555; /* Fundo da barra */
+    border: 2px solid #FFFFFF;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    overflow: hidden; /* Para garantir que a barra interna se ajuste */
+}
+
+.health-bar-inner {
+    width: 100%; /* Isso seria controlado por JavaScript */
+    height: 100%;
+    background-color: #FF0000; /* Cor da vida (vermelho) */
+    color: white;
+    font-weight: bold;
+    line-height: 25px; /* Centraliza o texto "100%" */
+    font-size: 0.8rem;
+}
+
+/* Texto da Pergunta */
+.pergunta-texto {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 25px;
+    line-height: 1.4;
+}
+
+/* Botões de Opção (A, B, C, Verdadeiro, Falso) */
+.btn-opcao {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0;
+    background-color: #e7c83d; /* Botões amarelos */
+    color: #000000; /* Texto preto */
+    border: 2px solid #000000;
+    border-radius: 8px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-opcao:hover {
+    background-color: #FFF59D; /* Amarelo mais claro ao passar o mouse */
+}
+
+/* Estilos para a tela inicial (Inputs) */
+.form-group label {
+    display: block;
+    margin-top: 15px;
+    font-size: 1.1rem;
+}
+
+input[type="text"],
+input[type="email"] {
+    width: 80%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 2px solid #000000;
+    font-size: 1rem;
+}
+
+/* Botão "INICIAR !" */
+.btn-iniciar {
+    font-family: 'Press Start 2P', cursive;
+    background-color: #4CAF50; /* Verde */
+    color: white;
+    font-size: 1.2rem;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 25px;
+    text-shadow: 2px 2px #000000;
+}
+
+.btn-iniciar:hover {
+    background-color: #45a049;
+}
