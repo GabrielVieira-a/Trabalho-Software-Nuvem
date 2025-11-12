@@ -113,3 +113,26 @@ input[type="email"] {
 .btn-iniciar:hover {
     background-color: #45a049;
 }
+
+/* Layout da lista de regras e gabarito */
+.regras-lista, .gabarito-lista {
+    list-style: none;
+    padding: 0;
+    margin: 20px auto;
+    max-width: 400px;
+    text-align: left;
+}
+
+.gabarito-lista p {
+    margin: 8px 0;
+    font-size: 1rem;
+}
+
+/* Container principal */
+.quiz-container {
+    background: rgba(0,0,0,0.6);
+    padding: 40px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 600px;
+}
