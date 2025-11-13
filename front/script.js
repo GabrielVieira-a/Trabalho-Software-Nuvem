@@ -50,8 +50,24 @@ loginForm.addEventListener("submit", e => {
 startQuizBtn.addEventListener("click", () => {
     rulesScreen.style.display = "none";
     quizScreen.style.display = "block";
+
+    embaralharPerguntas(); // embaralha antes de começar
+    currentQuestion = 0;
+    score = 0;
+    health = 100;
+    healthBar.style.width = "100%";
+    healthBar.textContent = "100%";
+
     mostrarPergunta();
 });
+
+// Função para embaralhar as perguntas (Fisher-Yates)
+function embaralharPerguntas() {
+    for (let i = perguntas.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [perguntas[i], perguntas[j]] = [perguntas[j], perguntas[i]];
+    }
+}
 
 function mostrarPergunta() {
     const q = perguntas[currentQuestion];
@@ -100,9 +116,4 @@ function mostrarResultado() {
 playAgainBtn.addEventListener("click", () => {
     resultsScreen.style.display = "none";
     startScreen.style.display = "block";
-    currentQuestion = 0;
-    score = 0;
-    health = 100;
-    healthBar.style.width = "100%";
-    healthBar.textContent = "100%";
 });
