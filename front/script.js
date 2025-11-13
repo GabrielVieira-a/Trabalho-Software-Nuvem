@@ -11,10 +11,12 @@ const optionsContainer = document.getElementById("options-container");
 const healthBar = document.getElementById("health-bar");
 const finalScore = document.getElementById("final-score");
 const answersList = document.getElementById("answers-list");
+const rankingList = document.getElementById("ranking-list");
 
 let currentQuestion = 0;
 let score = 0;
 let health = 100;
+let jogador = {};
 
 const perguntas = [
     {
@@ -42,6 +44,12 @@ const perguntas = [
 // login → regras
 loginForm.addEventListener("submit", e => {
     e.preventDefault();
+    const nome = document.getElementById("nome").value.trim();
+    const email = document.getElementById("email").value.trim();
+
+    if (nome === "" || email === "") return alert("Preencha nome e e-mail!");
+
+    jogador = { nome, email };
     startScreen.style.display = "none";
     rulesScreen.style.display = "block";
 });
@@ -51,7 +59,7 @@ startQuizBtn.addEventListener("click", () => {
     rulesScreen.style.display = "none";
     quizScreen.style.display = "block";
 
-    embaralharPerguntas(); // embaralha antes de começar
+    embaralharPerguntas(); 
     currentQuestion = 0;
     score = 0;
     health = 100;
@@ -61,7 +69,7 @@ startQuizBtn.addEventListener("click", () => {
     mostrarPergunta();
 });
 
-// Função para embaralhar as perguntas (Fisher-Yates)
+// Embaralhar perguntas
 function embaralharPerguntas() {
     for (let i = perguntas.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -107,13 +115,43 @@ function mostrarResultado() {
     resultsScreen.style.display = "block";
     finalScore.textContent = score;
 
+    // Salvar resultado no ranking
+    salvarNoRanking(jogador.nome, jogador.email, score);
+
+    // Mostrar respostas corretas
     answersList.innerHTML = perguntas.map((p, i) => {
         const correta = p.opcoes[p.correta];
         return `<p>${i + 1}: ${correta}</p>`;
     }).join("");
+
+    // Atualizar ranking na tela
+    mostrarRanking();
 }
 
 playAgainBtn.addEventListener("click", () => {
     resultsScreen.style.display = "none";
     startScreen.style.display = "block";
 });
+
+// --- FUNÇÕES DE RANKING ---
+function salvarNoRanking(nome, email, pontuacao) {
+    const novoJogador = { nome, email, pontuacao };
+    const ranking = JSON.parse(localStorage.getItem("rankingQuiz")) || [];
+
+    ranking.push(novoJogador);
+
+    // Ordenar por pontuação (maior para menor)
+    ranking.sort((a, b) => b.pontuacao - a.pontuacao);
+
+    // Limitar a 10 melhores (opcional)
+    const top10 = ranking.slice(0, 10);
+
+    localStorage.setItem("rankingQuiz", JSON.stringify(top10));
+}
+
+function mostrarRanking() {
+    const ranking = JSON.parse(localStorage.getItem("rankingQuiz")) || [];
+    rankingList.innerHTML = ranking.map((j, i) => 
+        `<li><strong>${i + 1}.</strong> ${j.nome} — ${j.pontuacao} pontos</li>`
+    ).join("");
+}

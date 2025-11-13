@@ -25,6 +25,11 @@
                 </div>
                 <button type="submit" class="btn-iniciar">INICIAR !</button>
             </form>
+
+            <!-- BOTÃO OPCIONAL PARA VER O RANKING ANTES DE JOGAR -->
+            <div style="margin-top: 30px;">
+                <button id="ver-ranking-btn" class="btn-iniciar" style="background-color:#e7c83d;color:#000;">VER RANKING</button>
+            </div>
         </div>
 
         <!-- TELA 2 — REGRAS -->
@@ -60,10 +65,48 @@
                 <div id="answers-list"></div>
             </div>
 
+            <!-- NOVO BLOCO DE RANKING -->
+            <div id="ranking-container">
+                <h3>🏆 Ranking</h3>
+                <ol id="ranking-list"></ol>
+            </div>
+
             <button class="btn-iniciar" id="play-again-btn">Jogar Novamente</button>
         </div>
+
+        <!-- TELA 5 — RANKING SEPARADO (ANTES DE JOGAR) -->
+        <div id="ranking-screen" class="screen" style="display:none;">
+            <h1 class="pixel-title">🏆 RANKING GERAL</h1>
+            <ol id="ranking-list-home"></ol>
+            <button class="btn-iniciar" id="voltar-inicio-btn">Voltar</button>
+        </div>
+
     </div>
 
     <script src="script.js"></script>
+    <script>
+        // Script extra para exibir o ranking antes de jogar
+        const verRankingBtn = document.getElementById("ver-ranking-btn");
+        const rankingScreen = document.getElementById("ranking-screen");
+        const voltarInicioBtn = document.getElementById("voltar-inicio-btn");
+        const rankingListHome = document.getElementById("ranking-list-home");
+
+        verRankingBtn.addEventListener("click", () => {
+            startScreen.style.display = "none";
+            rankingScreen.style.display = "block";
+
+            const ranking = JSON.parse(localStorage.getItem("rankingQuiz")) || [];
+            rankingListHome.innerHTML = ranking.length
+                ? ranking.map((j, i) =>
+                    `<li><strong>${i + 1}.</strong> ${j.nome} — ${j.pontuacao} pontos</li>`
+                ).join("")
+                : "<p>Nenhum jogador registrado ainda.</p>";
+        });
+
+        voltarInicioBtn.addEventListener("click", () => {
+            rankingScreen.style.display = "none";
+            startScreen.style.display = "block";
+        });
+    </script>
 </body>
 </html>
