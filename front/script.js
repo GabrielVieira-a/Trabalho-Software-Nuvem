@@ -1,14 +1,4 @@
-const { Client, Databases, Query } = Appwrite;
-
-const client = new Client()
-    .setEndpoint('https://cloud.appwrite.io/v1') 
-    .setProject('69162a6f000a7dfd4736');
-
-const databases = new Databases(client);
-
-const DATABASE_ID = '69162aa9002463ab1ea6';
-const COLLECTION_ID = '69162aa9002463ab1ea6';
-
+// ===================== SELETORES DE TELAS ===================== //
 const loginForm = document.getElementById("login-form");
 const startScreen = document.getElementById("start-screen");
 const rulesScreen = document.getElementById("rules-screen");
@@ -23,10 +13,12 @@ const healthBar = document.getElementById("health-bar");
 const finalScore = document.getElementById("final-score");
 const answersList = document.getElementById("answers-list");
 
+// ===================== VARIÁVEIS ===================== //
 let currentQuestion = 0;
 let score = 0;
 let health = 100;
 
+// ===================== PERGUNTAS ===================== //
 const perguntas = [
     {
         texto: "QUAL DAS OPÇÕES A SEGUIR É UM MODELO DE SERVIÇO DE COMPUTAÇÃO EM NUVEM?",
@@ -39,7 +31,7 @@ const perguntas = [
         correta: 1
     },
     {
-        texto: "EM APLICAÇÕES BASEADAS EM NUVEM, A ESCALABILIDADE PODE SER AJUSTADA AUTOMATICAMENTE CONFORME A DEMANDA DE USUÁRIOS AUMENTA OU DIMINUI.",
+        texto: "EM APLICAÇÕES BASEADAS EM NUVEM, A ESCALABILIDADE PODE SER AJUSTADA AUTOMATICAMENTE CONFORME A DEMANDA DE USUÁRIOS AUMENTA OU DIMINUIR.",
         opcoes: ["VERDADEIRO", "FALSO"],
         correta: 0
     },
@@ -50,14 +42,16 @@ const perguntas = [
     }
 ];
 
-// login → regras
+
+// ===================== TRANSIÇÃO: LOGIN → REGRAS ===================== //
 loginForm.addEventListener("submit", e => {
     e.preventDefault();
     startScreen.style.display = "none";
     rulesScreen.style.display = "block";
 });
 
-// regras → quiz
+
+// ===================== TRANSIÇÃO: REGRAS → QUIZ ===================== //
 startQuizBtn.addEventListener("click", () => {
     rulesScreen.style.display = "none";
     quizScreen.style.display = "block";
@@ -72,7 +66,8 @@ startQuizBtn.addEventListener("click", () => {
     mostrarPergunta();
 });
 
-// Função para embaralhar as perguntas (Fisher-Yates)
+
+// ===================== EMBARALHAR PERGUNTAS ===================== //
 function embaralharPerguntas() {
     for (let i = perguntas.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -80,6 +75,8 @@ function embaralharPerguntas() {
     }
 }
 
+
+// ===================== MOSTRAR PERGUNTA ===================== //
 function mostrarPergunta() {
     const q = perguntas[currentQuestion];
     questionText.textContent = q.texto;
@@ -94,18 +91,23 @@ function mostrarPergunta() {
     });
 }
 
+
+// ===================== VERIFICAR RESPOSTA ===================== //
 function verificarResposta(index) {
     const q = perguntas[currentQuestion];
+
     if (index === q.correta) {
         score += 25;
     } else {
         health -= 25;
         if (health < 0) health = 0;
+
         healthBar.style.width = health + "%";
         healthBar.textContent = health + "%";
     }
 
     currentQuestion++;
+
     if (currentQuestion < perguntas.length) {
         mostrarPergunta();
     } else {
@@ -113,15 +115,16 @@ function verificarResposta(index) {
     }
 }
 
+
+// ===================== TELA FINAL ===================== //
 function mostrarResultado() {
     quizScreen.style.display = "none";
     resultsScreen.style.display = "block";
     finalScore.textContent = score;
 
-    answersList.innerHTML = perguntas.map((p, i) => {
-        const correta = p.opcoes[p.correta];
-        return `<p>${i + 1}: ${correta}</p>`;
-    }).join("");
+    answersList.innerHTML = perguntas
+        .map((p, i) => `<p>${i + 1}: ${p.opcoes[p.correta]}</p>`)
+        .join("");
 
     const nomeJogador = document.getElementById("nome").value;
     const emailJogador = document.getElementById("email").value;
@@ -130,47 +133,68 @@ function mostrarResultado() {
     mostrarRanking(nomeJogador, score);
 }
 
-// Salvar pontuação no Appwrite
+
+// ===================== SALVAR NO APPWRITE (REST) ===================== //
 async function salvarPontuacao(nome, email, pontuacao) {
     try {
-        await databases.createDocument(DATABASE_ID, COLLECTION_ID, 'unique()', {
-            nome: nome,
-            email: email,
-            pontuacao: pontuacao
+        const response = await fetch(`${APPWRITE_ENDPOINT}/databases/${DATABASE_ID}/collections/${COLLECTION_ID}/documents`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-Appwrite-Project": PROJECT_ID,
+                "X-Appwrite-Key": API_KEY
+            },
+            body: JSON.stringify({
+                nome: nome,
+                email: email,
+                pontuacao: pontuacao
+            })
         });
-        console.log("Pontuação salva com sucesso no Appwrite!");
+
+        const data = await response.json();
+        console.log("Documento salvo:", data);
+
     } catch (error) {
-        console.error("Erro ao salvar no Appwrite:", error);
+        console.error("Erro ao salvar documento:", error);
     }
 }
 
-// Mostrar ranking com melhorias visuais
+
+// ===================== MOSTRAR RANKING (REST) ===================== //
 async function mostrarRanking(nomeAtual, pontuacaoAtual) {
     try {
-        const response = await databases.listDocuments(DATABASE_ID, COLLECTION_ID, [
-            Query.orderDesc("pontuacao"),
-            Query.limit(5)
-        ]);
+        const response = await fetch(`${APPWRITE_ENDPOINT}/databases/${DATABASE_ID}/collections/${COLLECTION_ID}/documents`, {
+            method: "GET",
+            headers: {
+                "X-Appwrite-Project": PROJECT_ID,
+                "X-Appwrite-Key": API_KEY
+            }
+        });
+
+        const data = await response.json();
+        let docs = data.documents;
+
+        docs.sort((a, b) => b.pontuacao - a.pontuacao);
+
+        const top5 = docs.slice(0, 5);
 
         let rankingHTML = "<hr><h3>🏆 TOP 5 JOGADORES</h3>";
-        response.documents.forEach((doc, i) => {
+
+        top5.forEach((doc, i) => {
             rankingHTML += `<p>${i + 1}. ${doc.nome} — ${doc.pontuacao} pts</p>`;
         });
 
-        // destaque para o jogador atual
         rankingHTML += `<hr><p><strong>Você:</strong> ${nomeAtual} — ${pontuacaoAtual} pts</p>`;
 
-        // substitui o conteúdo anterior, mantendo respostas + ranking
-        answersList.innerHTML = perguntas.map((p, i) => {
-            const correta = p.opcoes[p.correta];
-            return `<p>${i + 1}: ${correta}</p>`;
-        }).join("") + rankingHTML;
+        answersList.innerHTML += rankingHTML;
 
     } catch (error) {
         console.error("Erro ao carregar ranking:", error);
     }
 }
 
+
+// ===================== JOGAR NOVAMENTE ===================== //
 playAgainBtn.addEventListener("click", () => {
     resultsScreen.style.display = "none";
     startScreen.style.display = "block";
