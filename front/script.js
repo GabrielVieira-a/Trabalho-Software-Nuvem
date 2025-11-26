@@ -1,3 +1,6 @@
+// ===================== CONFIG ===================== //
+const BACKEND_URL = "http://localhost:3000";
+
 // ===================== SELETORES DE TELAS ===================== //
 const loginForm = document.getElementById("login-form");
 const startScreen = document.getElementById("start-screen");
@@ -31,7 +34,7 @@ const perguntas = [
         correta: 1
     },
     {
-        texto: "EM APLICAÇÕES BASEADAS EM NUVEM, A ESCALABILIDADE PODE SER AJUSTADA AUTOMATICAMENTE CONFORME A DEMANDA DE USUÁRIOS AUMENTA OU DIMINUIR.",
+        texto: "EM APLICAÇÕES BASEADAS EM NUVEM, A ESCALABILIDADE PODE SER AJUSTADA AUTOMATICAMENTE.",
         opcoes: ["VERDADEIRO", "FALSO"],
         correta: 0
     },
@@ -43,15 +46,54 @@ const perguntas = [
 ];
 
 
-// ===================== TRANSIÇÃO: LOGIN → REGRAS ===================== //
-loginForm.addEventListener("submit", e => {
+// ===================== CADASTRO → REGRAS ===================== //
+loginForm.addEventListener("submit", async e => {
     e.preventDefault();
+
+    const nome = document.getElementById("nome").value;
+    const email = document.getElementById("email").value;
+
+    const ok = await registerUser(nome, email);
+
+    if (!ok) {
+        alert("Erro ao registrar. Verifique os dados.");
+        return;
+    }
+
+    // segue fluxo normal
     startScreen.style.display = "none";
     rulesScreen.style.display = "block";
 });
 
 
-// ===================== TRANSIÇÃO: REGRAS → QUIZ ===================== //
+// ===================== API: REGISTRO REAL DE USUÁRIO ===================== //
+async function registerUser(nome, email) {
+    try {
+        const resp = await fetch(`${BACKEND_URL}/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nome, email })
+        });
+
+        const data = await resp.json();
+        console.log("Resposta do backend:", data);
+
+        if (data.sucesso) {
+            console.log("Usuário registrado:", data.usuario);
+            return true;
+        }
+
+        console.error("Erro no registro:", data.erro);
+        return false;
+
+    } catch (error) {
+        console.error("Erro ao registrar usuário:", error);
+        return false;
+    }
+}
+
+
+// ===================== REGRAS → QUIZ ===================== //
 startQuizBtn.addEventListener("click", () => {
     rulesScreen.style.display = "none";
     quizScreen.style.display = "block";
@@ -117,7 +159,7 @@ function verificarResposta(index) {
 
 
 // ===================== TELA FINAL ===================== //
-function mostrarResultado() {
+async function mostrarResultado() {
     quizScreen.style.display = "none";
     resultsScreen.style.display = "block";
     finalScore.textContent = score;
@@ -126,57 +168,37 @@ function mostrarResultado() {
         .map((p, i) => `<p>${i + 1}: ${p.opcoes[p.correta]}</p>`)
         .join("");
 
-    const nomeJogador = document.getElementById("nome").value;
-    const emailJogador = document.getElementById("email").value;
+    const nome = document.getElementById("nome").value;
+    const email = document.getElementById("email").value;
 
-    salvarPontuacao(nomeJogador, emailJogador, score);
-    mostrarRanking(nomeJogador, score);
+    await salvarPontuacao(nome, email, score);
+    await mostrarRanking(nome, score);
 }
 
 
-// ===================== SALVAR NO APPWRITE (REST) ===================== //
+// ===================== API: SALVAR PONTUAÇÃO ===================== //
 async function salvarPontuacao(nome, email, pontuacao) {
     try {
-        const response = await fetch(`${APPWRITE_ENDPOINT}/databases/${DATABASE_ID}/collections/${COLLECTION_ID}/documents`, {
+        const resp = await fetch(`${BACKEND_URL}/score`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-Appwrite-Project": PROJECT_ID,
-                "X-Appwrite-Key": API_KEY
-            },
-            body: JSON.stringify({
-                nome: nome,
-                email: email,
-                pontuacao: pontuacao
-            })
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nome, email, pontuacao })
         });
 
-        const data = await response.json();
-        console.log("Documento salvo:", data);
+        const data = await resp.json();
+        console.log("Pontuação salva:", data);
 
     } catch (error) {
-        console.error("Erro ao salvar documento:", error);
+        console.error("Erro ao salvar pontuação:", error);
     }
 }
 
 
-// ===================== MOSTRAR RANKING (REST) ===================== //
+// ===================== API: MOSTRAR RANKING ===================== //
 async function mostrarRanking(nomeAtual, pontuacaoAtual) {
     try {
-        const response = await fetch(`${APPWRITE_ENDPOINT}/databases/${DATABASE_ID}/collections/${COLLECTION_ID}/documents`, {
-            method: "GET",
-            headers: {
-                "X-Appwrite-Project": PROJECT_ID,
-                "X-Appwrite-Key": API_KEY
-            }
-        });
-
-        const data = await response.json();
-        let docs = data.documents;
-
-        docs.sort((a, b) => b.pontuacao - a.pontuacao);
-
-        const top5 = docs.slice(0, 5);
+        const resp = await fetch(`${BACKEND_URL}/ranking`);
+        const top5 = await resp.json();
 
         let rankingHTML = "<hr><h3>🏆 TOP 5 JOGADORES</h3>";
 
