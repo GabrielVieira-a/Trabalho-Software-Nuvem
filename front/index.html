@@ -1,81 +1,72 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CloudQuiz</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CloudQuiz</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="quiz-container">
+<div class="quiz-container">
 
-        <div id="start-screen" class="screen">
-            <h1 class="pixel-title">QUIZ SOFTWARE<br>EM NUVEM</h1>
-            
-            <form id="login-form">
-                <div class="form-group">
-                    <label for="nome">NOME:</label>
-                    <input type="text" id="nome" name="nome" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">EMAIL:</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <button type="submit" class="btn-iniciar">INICIAR !</button>
-            </form>
-
-            <div style="margin-top: 30px;">
-                <button id="ver-ranking-btn" class="btn-iniciar" style="background-color:#e7c83d;color:#000;">VER RANKING</button>
+    <!-- TELA 1 — LOGIN -->
+    <div id="start-screen" class="screen">
+        <h1 class="pixel-title">QUIZ SOFTWARE<br>EM NUVEM</h1>
+        
+        <form id="login-form">
+            <div class="form-group">
+                <label for="nome">NOME:</label>
+                <input type="text" id="nome" name="nome" required>
             </div>
-        </div>
-
-        <div id="rules-screen" class="screen" style="display:none;">
-            <h1 class="pixel-title">REGRAS</h1>
-            
-            <ul class="regras-lista">
-                <li>1. ERRAR A RESPOSTA FAZ COM QUE VOCÊ PERCA VIDA.</li>
-                <li>2. O GABARITO SERÁ APRESENTADO NO FINAL DAS PERGUNTAS.</li>
-                <li>3. VENÇA O QUIZ !!!</li>
-            </ul>
-            
-            <button class="btn-iniciar" id="start-quiz-btn">JOGAR!</button>
-        </div>
-
-        <div id="quiz-screen" class="screen" style="display:none;">
-            <div class="health-bar-container">
-                <div class="health-bar-inner" id="health-bar" style="width: 100%;">100%</div>
+            <div class="form-group">
+                <label for="email">EMAIL:</label>
+                <input type="email" id="email" name="email" required>
             </div>
-
-            <h2 class="pergunta-texto" id="question-text">Carregando pergunta...</h2>
-
-            <div class="opcoes-container" id="options-container"></div>
-        </div>
-
-        <div id="results-screen" class="screen" style="display:none;">
-            <h1 class="pixel-title">GABARITO</h1>
-            
-            <div class="gabarito-lista">
-                <h3>Sua Pontuação: <span id="final-score">0</span></h3>
-                <div id="answers-list"></div>
-            </div>
-
-            <div id="ranking-container">
-                <h3>🏆 Ranking</h3>
-                <ol id="ranking-list"></ol>
-            </div>
-
-            <button class="btn-iniciar" id="play-again-btn">Jogar Novamente</button>
-        </div>
-
-        <div id="ranking-screen" class="screen" style="display:none;">
-            <h1 class="pixel-title">🏆 RANKING GERAL</h1>
-            <ol id="ranking-list-home"></ol>
-            <button class="btn-iniciar" id="voltar-inicio-btn">Voltar</button>
-        </div>
-
+            <button type="submit" class="btn-iniciar">INICIAR !</button>
+        </form>
     </div>
 
-    <script src="script.js"></script>
+    <!-- TELA 2 — REGRAS -->
+    <div id="rules-screen" class="screen" style="display:none;">
+        <h1 class="pixel-title">REGRAS</h1>
+        
+        <ul class="regras-lista">
+            <li>1. ERRAR A RESPOSTA FAZ COM QUE VOCÊ PERCA VIDA.</li>
+            <li>2. O GABARITO SERÁ APRESENTADO NO FINAL DAS PERGUNTAS.</li>
+            <li>3. VENÇA O QUIZ !!!</li>
+        </ul>
+        
+        <button class="btn-iniciar" id="start-quiz-btn">JOGAR!</button>
+    </div>
+
+    <!-- TELA 3 — QUIZ -->
+    <div id="quiz-screen" class="screen" style="display:none;">
+        <div class="health-bar-container">
+            <div class="health-bar-inner" id="health-bar" style="width: 100%;">100%</div>
+        </div>
+
+        <h2 class="pergunta-texto" id="question-text">Carregando pergunta...</h2>
+
+        <div class="opcoes-container" id="options-container"></div>
+    </div>
+
+    <!-- TELA 4 — RESULTADO -->
+    <div id="results-screen" class="screen" style="display:none;">
+        <h1 class="pixel-title">GABARITO</h1>
+        
+        <div class="gabarito-lista">
+            <h3>Sua Pontuação: <span id="final-score">0</span></h3>
+            <div id="answers-list"></div>
+        </div>
+
+        <button class="btn-iniciar" id="play-again-btn">Jogar Novamente</button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/appwrite@14.0.0"></script>
+<script src="script.js"></script>
+
+
 </body>
 </html>
